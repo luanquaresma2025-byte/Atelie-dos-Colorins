@@ -1,0 +1,3651 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ateliê dos Colorins</title>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+html,
+body{
+    width:100%;
+    height:100%;
+    margin:0;
+    padding:0;
+    overflow:hidden;
+}
+
+body{
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+    color:#4a3215;
+    background:
+        radial-gradient(
+            circle at top,
+            #fffbdc 0%,
+            #fff4ae 45%,
+            #f1d45e 100%
+        );
+}
+
+/* =========================================================
+   CABEÇALHO
+   ========================================================= */
+
+header{
+    height:95px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    background:#f5c928;
+    border-bottom:6px solid #d49d00;
+    box-shadow:0 3px 10px rgba(0,0,0,.18);
+    z-index:5;
+}
+
+header h1{
+    margin:0;
+    font-size:36px;
+    line-height:1;
+    color:#fffdf0;
+    text-shadow:
+        2px 2px 0 #8f6400,
+        3px 3px 0 rgba(0,0,0,.12);
+}
+
+header p{
+    margin:6px 0 0;
+    font-size:15px;
+    font-weight:bold;
+}
+
+/* =========================================================
+   BOTÃO GALERIA
+   ========================================================= */
+
+.botao-galeria{
+    position:absolute;
+    right:22px;
+    top:50%;
+    transform:translateY(-50%);
+    background:#fff8c9;
+    color:#704800;
+    border:3px solid #b98600;
+    border-radius:12px;
+    padding:9px 16px;
+    font-family:inherit;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+    box-shadow:0 3px 0 #9b6d00;
+}
+
+.botao-galeria:hover{
+    transform:
+        translateY(-50%)
+        translateY(-2px);
+}
+
+/* =========================================================
+   EDITOR
+   ========================================================= */
+
+.container{
+    width:100%;
+    height:calc(100vh - 95px);
+    padding:16px;
+    overflow:hidden;
+}
+
+.editor{
+    width:100%;
+    height:100%;
+    display:grid;
+    grid-template-columns:350px minmax(0,1fr);
+    gap:16px;
+}
+
+/* =========================================================
+   PAINÉIS
+   ========================================================= */
+
+.panel,
+.preview-panel{
+    background:#fffdf1;
+    border:5px solid #e1b529;
+    border-radius:20px;
+    box-shadow:
+        0 7px 18px
+        rgba(91,61,0,.18);
+}
+
+.panel{
+    height:100%;
+    padding:15px;
+    overflow-y:auto;
+    overflow-x:hidden;
+}
+
+.panel h2{
+    margin:0 0 14px;
+    font-size:24px;
+    color:#704800;
+    text-align:center;
+}
+
+/* =========================================================
+   SEÇÕES
+   ========================================================= */
+
+.section{
+    margin-bottom:13px;
+    padding-bottom:12px;
+    border-bottom:2px dashed #e2bd43;
+}
+
+.section:last-child{
+    border-bottom:none;
+}
+
+.section-title{
+    margin-bottom:7px;
+    font-size:16px;
+    font-weight:bold;
+    color:#704800;
+}
+
+/* =========================================================
+   INPUTS
+   ========================================================= */
+
+input[type="text"],
+select{
+    width:100%;
+    height:38px;
+    padding:7px 10px;
+    border:2px solid #d4a82a;
+    border-radius:10px;
+    background:#fffdf5;
+    color:#4a3215;
+    font-size:14px;
+    font-family:inherit;
+    outline:none;
+}
+
+input[type="text"]:focus,
+select:focus{
+    border-color:#9f7200;
+    box-shadow:
+        0 0 0 3px
+        rgba(229,185,22,.2);
+}
+
+.characteristic-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:6px;
+    max-height:190px;
+    overflow-y:auto;
+    padding:2px;
+}
+
+.characteristic-grid::-webkit-scrollbar{
+    width:6px;
+}
+
+.characteristic-grid::-webkit-scrollbar-thumb{
+    background:#d9ae2b;
+    border-radius:10px;
+}
+
+.characteristic{
+    min-height:39px;
+    padding:7px 8px;
+    border:2px solid #d4a82a;
+    border-radius:10px;
+    background:#fffaf0;
+    color:#5d3e0d;
+    cursor:pointer;
+    font-family:inherit;
+    font-size:11px;
+    font-weight:bold;
+    transition:transform .12s, background .12s, border-color .12s, box-shadow .12s;
+}
+
+.characteristic:hover{
+    background:#fff1a9;
+    transform:translateY(-1px);
+}
+
+.characteristic.selected{
+    background:#ffe06b;
+    border-color:#805500;
+    box-shadow:inset 0 0 0 2px #fff5bd, 0 2px 4px rgba(112,72,0,.12);
+}
+
+label{
+    font-size:13px;
+    font-weight:bold;
+    color:#79551b;
+}
+
+/* =========================================================
+   PALETAS
+   ========================================================= */
+
+.palette{
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+}
+
+.color{
+    width:28px;
+    height:28px;
+    padding:0;
+    border-radius:50%;
+    border:3px solid white;
+    box-shadow:
+        0 1px 4px
+        rgba(0,0,0,.35);
+    cursor:pointer;
+    transition:transform .12s;
+}
+
+.color:hover{
+    transform:scale(1.16);
+}
+
+.color.selected{
+    outline:3px solid #694900;
+    transform:scale(1.12);
+}
+
+/* =========================================================
+   INTENSIDADE DAS CORES
+   ========================================================= */
+
+.frase-caracteristica{
+    margin-top:9px;
+    padding:10px 11px;
+    border-left:4px solid #d9ae2b;
+    border-radius:0 10px 10px 0;
+    background:#fff8d9;
+    color:#6d4a12;
+    font-family:Georgia,serif;
+    font-size:12px;
+    line-height:1.4;
+    font-style:italic;
+    box-shadow:inset 0 0 0 1px rgba(217,174,43,.25);
+}
+
+.tone-control{
+    margin-top:8px;
+    padding:8px 9px;
+    border:1px solid #e1c15b;
+    border-radius:10px;
+    background:#fffaf0;
+}
+
+.tone-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    margin-bottom:4px;
+}
+
+.tone-title{
+    font-size:11px;
+    font-weight:bold;
+    color:#79551b;
+}
+
+.tone-value{
+    min-width:38px;
+    text-align:center;
+    padding:2px 6px;
+    border-radius:8px;
+    background:#ffe27a;
+    color:#694900;
+    font-size:10px;
+    font-weight:bold;
+}
+
+.tone-control input[type="range"]{
+    width:100%;
+    height:5px;
+    margin:2px 0 4px;
+    accent-color:#d9ae2b;
+    cursor:pointer;
+}
+
+.tone-labels{
+    display:flex;
+    justify-content:space-between;
+    font-size:9px;
+    color:#9a7831;
+}
+
+/* =========================================================
+   OPÇÕES
+   ========================================================= */
+
+.option-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:6px;
+}
+
+.option{
+    min-height:52px;
+    padding:4px;
+    border:2px solid #d4a82a;
+    border-radius:10px;
+    background:#fffaf0;
+    cursor:pointer;
+    font-family:inherit;
+    font-size:11px;
+    font-weight:bold;
+    color:#5d3e0d;
+}
+
+.option:hover{
+    background:#fff1a9;
+}
+
+.option.selected{
+    background:#ffe06b;
+    border-color:#805500;
+    box-shadow:
+        inset 0 0 0 2px
+        #fff5bd;
+}
+
+.option img{
+    display:block;
+    max-width:36px;
+    max-height:29px;
+    margin:0 auto 2px;
+}
+
+/* =========================================================
+   BOTÕES
+   ========================================================= */
+
+button{
+    border:none;
+    border-radius:11px;
+    padding:9px 12px;
+    font-family:inherit;
+    font-size:13px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.12s;
+}
+
+button:hover{
+    transform:translateY(-2px);
+}
+
+/* Pequena animação padrão para todos os botões */
+button.btn-clicked{
+    animation:botaoClique .16s ease-out;
+}
+
+@keyframes botaoClique{
+    0%{ transform:scale(1); }
+    45%{ transform:scale(.94); }
+    100%{ transform:scale(1); }
+}
+
+button:focus-visible{
+    outline:3px solid rgba(245,202,43,.45);
+    outline-offset:2px;
+}
+
+.btn-primary{
+    background:#e5b916;
+    color:white;
+    box-shadow:0 3px 0 #a47700;
+}
+
+.btn-green{
+    background:#65a84b;
+    color:white;
+    box-shadow:0 3px 0 #397128;
+}
+
+.btn-red{
+    background:#c85d50;
+    color:white;
+    box-shadow:0 3px 0 #8d382e;
+}
+
+.btn-gray{
+    background:#857c6d;
+    color:white;
+    box-shadow:0 3px 0 #5d564b;
+}
+
+.actions{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:8px;
+}
+
+.actions button{
+    width:100%;
+    min-height:42px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.btn-save{
+    background:#65a84b;
+    color:white;
+    box-shadow:0 3px 0 #397128;
+}
+
+.btn-save:hover{
+    background:#72b957;
+}
+
+.btn-save.saving{
+    animation:salvarPulse .65s ease;
+}
+
+@keyframes salvarPulse{
+    0%{transform:scale(1);}
+    35%{transform:scale(1.035);}
+    70%{transform:scale(.98);}
+    100%{transform:scale(1);}
+}
+
+.galeria-acoes button{
+    width:100%;
+    min-height:40px;
+}
+
+.zoom-tela{
+    position:fixed;
+    inset:0;
+    z-index:50;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    background:rgba(62,43,8,.78);
+    backdrop-filter:blur(3px);
+}
+
+.zoom-caixa{
+    position:relative;
+    width:min(760px,92vw);
+    height:min(900px,92vh);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:22px 22px 18px;
+    background:#fffdf1;
+    border:5px solid #e1b529;
+    border-radius:22px;
+    box-shadow:0 12px 35px rgba(0,0,0,.35);
+}
+
+.zoom-caixa h2{
+    margin:0 0 10px;
+    color:#714b00;
+    font-size:24px;
+    text-align:center;
+}
+
+.zoom-caixa canvas{
+    display:block;
+    max-width:100%;
+    max-height:calc(100% - 90px);
+    width:auto;
+    height:auto;
+    background:white;
+    border:3px solid #d4aa25;
+    border-radius:12px;
+    box-shadow:0 5px 18px rgba(0,0,0,.2);
+}
+
+.zoom-fechar{
+    position:absolute;
+    top:10px;
+    right:10px;
+    width:38px;
+    height:38px;
+    padding:0;
+    border-radius:50%;
+    background:#c85d50;
+    color:white;
+    box-shadow:0 3px 0 #8d382e;
+    font-size:18px;
+}
+
+/* =========================================================
+   PREVIEW
+   ========================================================= */
+
+.preview-panel{
+    min-width:0;
+    min-height:0;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    padding:14px;
+}
+
+.preview-title{
+    margin:0 0 7px;
+    text-align:center;
+    font-size:22px;
+    color:#815600;
+}
+
+.canvas-area{
+    flex:1;
+    min-height:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+    background:#ead68a;
+    border:3px solid #d4a82a;
+    border-radius:14px;
+    padding:10px;
+}
+
+.canvas-wrapper{
+    width:100%;
+    height:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+#canvas{
+    display:block;
+    width:auto;
+    height:auto;
+    max-width:100%;
+    max-height:100%;
+    aspect-ratio:1050 / 1485;
+    background:white;
+    border:2px solid #c99d16;
+    box-shadow:
+        0 5px 16px
+        rgba(0,0,0,.22);
+}
+
+.tip{
+    margin-top:6px;
+    text-align:center;
+    color:#70552a;
+    font-size:11px;
+}
+
+/* =========================================================
+   GALERIA
+   ========================================================= */
+
+.galeria-tela{
+    position:fixed;
+    inset:0;
+    z-index:20;
+    display:none;
+    flex-direction:column;
+    background:
+        radial-gradient(
+            circle at top,
+            #fffbdc 0%,
+            #fff4ae 45%,
+            #f1d45e 100%
+        );
+}
+
+.galeria-header{
+    height:95px;
+    flex:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    background:#f5c928;
+    border-bottom:6px solid #d49d00;
+}
+
+.galeria-header h1{
+    margin:0;
+    color:#fffdf0;
+    font-size:34px;
+    text-shadow:2px 2px 0 #8f6400;
+}
+
+.botao-voltar{
+    position:absolute;
+    left:22px;
+    top:50%;
+    transform:translateY(-50%);
+    background:#fff8c9;
+    color:#704800;
+    border:3px solid #b98600;
+    border-radius:12px;
+    padding:9px 16px;
+    font-family:inherit;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.galeria-conteudo{
+    flex:1;
+    min-height:0;
+    overflow-y:auto;
+    padding:20px;
+}
+
+.galeria-grade{
+    width:min(1400px,100%);
+    margin:auto;
+    display:grid;
+    grid-template-columns:
+        repeat(
+            auto-fill,
+            minmax(220px,1fr)
+        );
+    gap:18px;
+}
+
+.galeria-card{
+    background:#fffdf1;
+    border:5px solid #e1b529;
+    border-radius:18px;
+    padding:10px;
+    text-align:center;
+    box-shadow:
+        0 6px 15px
+        rgba(91,61,0,.18);
+}
+
+.galeria-card canvas{
+    display:block;
+    width:100%;
+    height:auto;
+    border:2px solid #d4aa25;
+    border-radius:10px;
+    background:white;
+}
+
+.galeria-card h3{
+    margin:8px 0 2px;
+    color:#714b00;
+    font-size:18px;
+}
+
+.galeria-card p{
+    margin:3px 0 9px;
+    font-size:13px;
+    font-style:italic;
+    color:#795b20;
+}
+
+.galeria-card .galeria-frase{
+    min-height:54px;
+    margin:5px 2px 10px;
+    font-size:12px;
+    line-height:1.35;
+    color:#7a5b24;
+}
+
+.galeria-acoes{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:7px;
+}
+
+.galeria-vazia{
+    width:min(700px,90%);
+    margin:70px auto;
+    padding:45px 25px;
+    text-align:center;
+    background:#fffdf1;
+    border:5px dashed #d4aa25;
+    border-radius:20px;
+    color:#795b20;
+}
+
+.galeria-vazia h2{
+    margin-top:0;
+    font-size:28px;
+    color:#714b00;
+}
+
+/* =========================================================
+   RESPONSIVIDADE
+   ========================================================= */
+
+@media(max-width:1050px){
+
+    .galeria-acoes{grid-template-columns:1fr;}
+    .editor{grid-template-columns:310px minmax(0,1fr);}
+    .option-grid{grid-template-columns:repeat(2,1fr);}
+    header h1{font-size:30px;}
+}
+
+/* =========================================================
+   CELULAR / TABLET
+   O mesmo HTML se reorganiza automaticamente conforme a tela.
+   ========================================================= */
+@media(max-width:700px){
+    html,body{
+        height:auto;
+        min-height:100%;
+        overflow-x:hidden;
+        overflow-y:auto;
+    }
+
+    body{-webkit-text-size-adjust:100%;}
+
+    header{
+        height:auto;
+        min-height:118px;
+        padding:14px 12px 12px;
+    }
+
+    header h1{
+        max-width:calc(100% - 24px);
+        font-size:clamp(25px,8vw,34px);
+        text-align:center;
+        line-height:1.08;
+    }
+
+    header p{font-size:14px;margin-bottom:44px;}
+
+    .botao-galeria{
+        top:auto;
+        right:50%;
+        bottom:10px;
+        transform:translateX(50%);
+        min-height:42px;
+        padding:7px 18px;
+    }
+    .botao-galeria:hover{transform:translateX(50%) translateY(-1px);}
+
+    .container{
+        height:auto;
+        min-height:calc(100vh - 118px);
+        padding:10px;
+        overflow:visible;
+    }
+
+    .editor{
+        height:auto;
+        display:flex;
+        flex-direction:column;
+        gap:10px;
+    }
+
+    /* No celular o personagem aparece antes dos controles. */
+    .preview-panel{
+        order:1;
+        height:auto;
+        min-height:0;
+        padding:10px;
+    }
+
+    .panel{
+        order:2;
+        height:auto;
+        max-height:none;
+        overflow:visible;
+        padding:12px;
+    }
+
+    .preview-title{font-size:20px;margin-bottom:6px;}
+
+    .canvas-area{
+        flex:none;
+        width:100%;
+        height:auto;
+        min-height:0;
+        padding:7px;
+        overflow:visible;
+    }
+
+    .canvas-wrapper{height:auto;}
+
+    #canvas{
+        width:min(100%,430px);
+        height:auto;
+        max-width:100%;
+        max-height:none;
+    }
+
+    .tip{font-size:10px;}
+
+    .palette{
+        display:grid;
+        grid-template-columns:repeat(8,1fr);
+        gap:7px;
+        justify-items:center;
+    }
+
+    .color{
+        width:32px;
+        height:32px;
+        margin:2px 0 7px;
+    }
+
+    .option-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .characteristic-grid{grid-template-columns:repeat(2,minmax(0,1fr));max-height:none;}
+
+    button,.option,.characteristic{touch-action:manipulation;}
+    .actions button{min-height:48px;font-size:14px;}
+
+    .galeria-header{
+        height:auto;
+        min-height:112px;
+        padding:16px 12px 54px;
+    }
+    .galeria-header h1{font-size:28px;text-align:center;}
+    .botao-voltar{
+        top:auto;
+        left:50%;
+        bottom:10px;
+        transform:translateX(-50%);
+        min-height:40px;
+    }
+    .galeria-conteudo{padding:10px;}
+    .galeria-grade{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+    .galeria-card{border-width:3px;padding:7px;}
+    .galeria-acoes{grid-template-columns:1fr;}
+    .zoom-tela{padding:10px;}
+    .zoom-caixa{width:96vw;height:92vh;padding:16px 10px 12px;}
+}
+
+@media(max-width:430px){
+    .palette{grid-template-columns:repeat(6,1fr);}
+    .color{width:34px;height:34px;}
+    .galeria-grade{grid-template-columns:1fr;}
+    .characteristic{font-size:12px;min-height:44px;}
+    .panel h2{font-size:22px;}
+}
+
+
+/* BOTAO JPG */
+.btn-jpg{
+    background:linear-gradient(135deg,#c62828,#e53935);
+    color:white;
+    border:2px solid #8e1b1b;
+    border-radius:12px;
+    padding:10px 14px;
+    font-family:inherit;
+    font-weight:bold;
+    cursor:pointer;
+    box-shadow:0 3px 0 #8e1b1b;
+    transition:transform .12s,box-shadow .12s;
+}
+.btn-jpg:hover{transform:translateY(-1px);}
+.btn-jpg:active,.btn-jpg.btn-clicked{transform:translateY(2px);box-shadow:0 1px 0 #8e1b1b;}
+
+</style>
+</head>
+
+<body>
+
+<!-- =====================================================
+     CABEÇALHO
+     ===================================================== -->
+
+<header>
+
+    <h1>
+        🌼 Ateliê dos Colorins 🌼
+    </h1>
+
+    <p>
+        Crie seu próprio Colorin!
+    </p>
+
+    <button
+        class="botao-galeria"
+        onclick="abrirGaleria()"
+    >
+        🌈 Galeria
+    </button>
+
+</header>
+
+
+<!-- =====================================================
+     EDITOR
+     ===================================================== -->
+
+<div class="container">
+
+    <div class="editor">
+
+        <!-- CONTROLES -->
+
+        <div class="panel">
+
+            <h2>
+                🎨 Criar Colorin
+            </h2>
+
+            <!-- NOME -->
+
+            <div class="section">
+
+                <div class="section-title">
+                    Nome
+                </div>
+
+                <input
+                    id="nome"
+                    type="text"
+                    maxlength="30"
+                    placeholder="Digite o nome do Colorin"
+                    oninput="normalizarNome(this)"
+                >
+
+            </div>
+
+
+            <!-- COR DO CORPO -->
+
+            <div class="section">
+
+                <div class="section-title">
+                    Cor do Colorin
+                </div>
+
+                <div
+                    id="paletaCorpo"
+                    class="palette"
+                ></div>
+
+                <div class="tone-control">
+                    <div class="tone-top">
+                        <span class="tone-title">☀️ Intensidade da cor</span>
+                        <span id="valorTomCor" class="tone-value">Original</span>
+                    </div>
+                    <input id="tomCor" type="range" min="0" max="100" value="50" oninput="alterarTom('cor', this.value)">
+                    <div class="tone-labels"><span>Mais escura</span><span>Original</span><span>Mais clara</span></div>
+                </div>
+
+            </div>
+
+
+            <!-- ROUPA -->
+
+            <div class="section">
+
+                <div class="section-title">
+                    Roupa
+                </div>
+
+                <div
+                    id="opcoesRoupa"
+                    class="option-grid"
+                ></div>
+
+                <br>
+
+                <label>
+                    Cor da roupa
+                </label>
+
+                <div
+                    id="paletaRoupa"
+                    class="palette"
+                ></div>
+
+                <div class="tone-control">
+                    <div class="tone-top">
+                        <span class="tone-title">☀️ Intensidade da roupa</span>
+                        <span id="valorTomRoupa" class="tone-value">Original</span>
+                    </div>
+                    <input id="tomRoupa" type="range" min="0" max="100" value="50" oninput="alterarTom('roupaCor', this.value)">
+                    <div class="tone-labels"><span>Mais escura</span><span>Original</span><span>Mais clara</span></div>
+                </div>
+
+            </div>
+
+
+            <!-- ACESSÓRIO -->
+
+            <div class="section">
+
+                <div class="section-title">
+                    Acessório
+                </div>
+
+                <div
+                    id="opcoesAcessorio"
+                    class="option-grid"
+                ></div>
+
+                <br>
+
+                <label>
+                    Cor do acessório
+                </label>
+
+                <div
+                    id="paletaAcessorio"
+                    class="palette"
+                ></div>
+
+                <div class="tone-control">
+                    <div class="tone-top">
+                        <span class="tone-title">☀️ Intensidade do acessório</span>
+                        <span id="valorTomAcessorio" class="tone-value">Original</span>
+                    </div>
+                    <input id="tomAcessorio" type="range" min="0" max="100" value="50" oninput="alterarTom('acessorioCor', this.value)">
+                    <div class="tone-labels"><span>Mais escura</span><span>Original</span><span>Mais clara</span></div>
+                </div>
+
+            </div>
+
+
+            <!-- EXPRESSÃO -->
+
+            <div class="section">
+
+                <div class="section-title">
+                    Expressão
+                </div>
+
+                <div
+                    id="opcoesExpressao"
+                    class="option-grid"
+                ></div>
+
+            </div>
+
+
+            <!-- CARACTERÍSTICA -->
+
+            <div class="section">
+
+                <div class="section-title">
+                    Característica
+                </div>
+
+                <div
+                    id="opcoesCaracteristica"
+                    class="characteristic-grid"
+                ></div>
+
+                <div id="fraseCaracteristica" class="frase-caracteristica"></div>
+
+            </div>
+
+
+            <!-- BOTÕES -->
+
+            <div class="section">
+
+                <div class="actions">
+
+                    <button
+                        class="btn-primary"
+                        onclick="surpreender()"
+                    >
+                        ✨ Criar aleatoriamente
+                    </button>
+
+                    <button
+                        class="btn-gray"
+                        onclick="novoColorin()"
+                    >
+                        🌱 Novo
+                    </button>
+
+                    <button
+                        id="btnSalvar"
+                        class="btn-save"
+                        onclick="salvarColorin()"
+                    >
+                        💾 Salvar Colorin
+                    </button>
+
+                    <button
+                        class="btn-jpg"
+                        onclick="salvarJPGColorin()"
+                    >
+                        🖼️ Salvar como JPG
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PREVISUALIZAÇÃO -->
+
+        <div class="preview-panel">
+
+            <h2 class="preview-title">
+                🌸 Seu Colorin 🌸
+            </h2>
+
+            <div class="canvas-area">
+
+                <div class="canvas-wrapper">
+
+                    <canvas
+                        id="canvas"
+                        width="1050"
+                        height="1485"
+                    ></canvas>
+
+                </div>
+
+            </div>
+
+            <div class="tip">
+                Folha de criação: 1050 × 1485 px
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     GALERIA
+     ===================================================== -->
+
+<div
+    id="galeriaTela"
+    class="galeria-tela"
+>
+
+    <div class="galeria-header">
+
+        <button
+            class="botao-voltar"
+            onclick="fecharGaleria()"
+        >
+            🏠 Voltar ao Ateliê
+        </button>
+
+        <h1>
+            🌈 Galeria dos Colorins 🌈
+        </h1>
+
+    </div>
+
+    <div
+        id="galeriaConteudo"
+        class="galeria-conteudo"
+    ></div>
+
+</div>
+
+
+<!-- =====================================================
+     ZOOM DO COLORIN
+     ===================================================== -->
+
+<div
+    id="zoomTela"
+    class="zoom-tela"
+    onclick="fecharZoom(event)"
+>
+    <div
+        class="zoom-caixa"
+        onclick="event.stopPropagation()"
+    >
+        <button
+            class="zoom-fechar"
+            onclick="fecharZoom()"
+            title="Fechar"
+        >✕</button>
+
+        <h2 id="zoomTitulo">
+            Meu Colorin
+        </h2>
+
+        <canvas
+            id="zoomCanvas"
+            width="1050"
+            height="1485"
+        ></canvas>
+    </div>
+</div>
+
+
+<script>
+
+/* =========================================================
+   CONFIGURAÇÕES
+   ========================================================= */
+
+const LARGURA_CANVAS = 1050;
+const ALTURA_CANVAS = 1485;
+const AREA_MAX_LARGURA = 650;
+const AREA_MAX_ALTURA = 700;
+
+
+/* =========================================================
+   CAMINHOS DOS ARQUIVOS
+   ========================================================= */
+
+const caminhos = {
+
+    corpo:
+        "corpo.png",
+
+    expressoes: {
+
+        alegre:
+            "alegre.png",
+
+        triste:
+            "triste.png",
+
+        surpreso:
+            "surpreso.png",
+
+        bravo:
+            "bravo.png",
+
+        serio:
+            "serio.png"
+
+    },
+
+    roupas: {
+
+        nenhuma:
+            null,
+
+        camisa:
+            "camisa.png",
+
+        colete:
+            "colete.png",
+
+        macacao:
+            "macacao.png"
+
+    },
+
+    acessorios: {
+
+        nenhum:
+            null,
+
+        laco:
+            "laco.png",
+
+        oculos:
+            "oculos.png",
+
+        chapeu:
+            "chapeu.png"
+
+    }
+
+};
+
+
+/* =========================================================
+   CORES
+   ========================================================= */
+
+const cores = [
+
+    "#e53935",
+    "#ff7043",
+    "#ff9800",
+    "#ffc107",
+    "#fdd835",
+    "#8bc34a",
+    "#43a047",
+    "#00acc1",
+    "#1e88e5",
+    "#3949ab",
+    "#8e24aa",
+    "#d81b60",
+    "#f06292",
+    "#8d6e63"
+
+];
+
+
+/* =========================================================
+   FRASES DAS CARACTERÍSTICAS
+   ========================================================= */
+
+const frasesPorCaracteristica = {
+    "Criativo":"A criatividade encontra novas cores para o mundo e mostra que uma grande obra de arte precisa de muitas diferenças.",
+    "Aventureiro":"Ser aventureiro é atravessar novos caminhos sem deixar ninguém para trás e descobrir a beleza que existe em cada diferença.",
+    "Curioso":"A curiosidade nos ensina a conhecer o outro antes de julgá-lo e a perceber que nenhuma cor conta toda a história sozinha.",
+    "Corajoso":"Ser corajoso também é enfrentar o preconceito e defender o direito de cada cor existir, brilhar e ser respeitada.",
+    "Amigável":"A amizade aproxima cores diferentes e mostra que ninguém precisa ser igual para fazer parte da mesma obra de arte.",
+    "Inteligente":"A inteligência reconhece que não existem cores superiores ou inferiores: existem diferenças que tornam o mundo mais completo.",
+    "Divertido":"A alegria fica maior quando todos podem participar, porque uma festa com apenas uma cor nunca seria tão bonita quanto uma festa cheia de cores.",
+    "Gentil":"A gentileza dá espaço para cada cor ser quem é e ajuda a construir um mundo onde ninguém seja diminuído por sua diferença.",
+    "Determinado":"A determinação nos ajuda a continuar lutando por um mundo em que respeito e igualdade sejam maiores que qualquer preconceito.",
+    "Imaginativo":"A imaginação pode pintar um futuro diferente, onde as cores não sejam separadas por rótulos, mas reunidas em uma mesma obra.",
+    "Empático":"A empatia nos permite enxergar o mundo pelos olhos de outra pessoa e compreender que toda cor merece respeito.",
+    "Solidário":"A solidariedade lembra que, quando uma cor é apagada pelo preconceito, todas as outras perdem parte da beleza da obra.",
+    "Respeitoso":"O respeito reconhece que cada pessoa tem seu próprio tom e que nenhuma diferença deve ser motivo para diminuir alguém.",
+    "Cooperativo":"Quando diferentes cores trabalham juntas, cada uma acrescenta algo que as outras não poderiam criar sozinhas.",
+    "Generoso":"A generosidade compartilha espaço, oportunidades e respeito, porque uma grande obra de arte precisa de espaço para todas as suas cores.",
+    "Paciente":"A paciência nos ensina a conhecer as diferenças com calma e a substituir julgamentos apressados por compreensão e respeito.",
+    "Observador":"Quem observa com atenção percebe os rótulos e preconceitos escondidos e pode escolher enxergar a pessoa antes da cor.",
+    "Persistente":"A persistência mantém viva a esperança de construir uma sociedade em que nenhuma cor seja colocada acima de outra.",
+    "Leal":"A lealdade verdadeira também significa permanecer ao lado de quem sofre preconceito e ajudar a defender sua dignidade.",
+    "Inspirador":"Uma atitude inspiradora pode acrescentar uma nova cor ao mundo e mostrar que respeito, diversidade e união podem transformar a nossa grande obra de arte."
+};
+
+function obterFraseCaracteristica(caracteristica){
+    return frasesPorCaracteristica[caracteristica] || frasesPorCaracteristica["Criativo"];
+}
+
+function atualizarFraseCaracteristica(){
+    const elemento=document.getElementById("fraseCaracteristica");
+    if(elemento) elemento.textContent=obterFraseCaracteristica(colorin.caracteristica);
+}
+
+
+/* =========================================================
+   ESTADO DO COLORIN
+   ========================================================= */
+
+let colorin = {
+
+    id:null,
+
+    nome:"",
+
+    cor:"#e53935",
+
+    tomCor:50,
+
+    roupa:"nenhuma",
+
+    roupaCor:"#1e88e5",
+
+    tomRoupa:50,
+
+    acessorio:"nenhum",
+
+    acessorioCor:"#ffc107",
+
+    tomAcessorio:50,
+
+    expressao:"alegre",
+
+    caracteristica:"Criativo",
+
+    frase:obterFraseCaracteristica("Criativo")
+
+};
+
+
+/* =========================================================
+   IMAGENS
+   ========================================================= */
+
+const imagens = {};
+
+
+/* =========================================================
+   ANIMAÇÃO DE CLIQUE DOS BOTÕES
+   ========================================================= */
+
+document.addEventListener("click", function(event){
+
+    const botao = event.target.closest("button");
+
+    if(!botao) return;
+
+    botao.classList.remove("btn-clicked");
+
+    /* Reinicia a animação mesmo em cliques consecutivos. */
+    void botao.offsetWidth;
+
+    botao.classList.add("btn-clicked");
+
+    setTimeout(() => {
+        botao.classList.remove("btn-clicked");
+    }, 180);
+
+});
+
+
+/* =========================================================
+   CARREGAR IMAGEM
+   ========================================================= */
+
+function carregarImagem(caminho){
+
+    return new Promise(resolve => {
+
+        if(!caminho){
+
+            resolve(null);
+
+            return;
+
+        }
+
+        const imagem = new Image();
+
+        imagem.onload = () => {
+
+            console.log(
+                "IMAGEM ENCONTRADA:",
+                caminho
+            );
+
+            resolve(imagem);
+
+        };
+
+        imagem.onerror = () => {
+
+            console.error(
+                "IMAGEM NÃO ENCONTRADA:",
+                caminho
+            );
+
+            resolve(null);
+
+        };
+
+        imagem.src = caminho;
+
+    });
+
+}
+
+
+/* =========================================================
+   CARREGAR TODOS OS ARQUIVOS
+   ========================================================= */
+
+async function carregarTudo(){
+
+    imagens.corpo =
+        await carregarImagem(
+            caminhos.corpo
+        );
+
+
+    for(
+        const nome in caminhos.expressoes
+    ){
+
+        imagens[nome] =
+            await carregarImagem(
+                caminhos.expressoes[nome]
+            );
+
+    }
+
+
+    for(
+        const nome in caminhos.roupas
+    ){
+
+        if(
+            caminhos.roupas[nome]
+        ){
+
+            imagens[nome] =
+                await carregarImagem(
+                    caminhos.roupas[nome]
+                );
+
+        }
+
+    }
+
+
+    for(
+        const nome in caminhos.acessorios
+    ){
+
+        if(
+            caminhos.acessorios[nome]
+        ){
+
+            imagens[nome] =
+                await carregarImagem(
+                    caminhos.acessorios[nome]
+                );
+
+        }
+
+    }
+
+
+    criarInterface();
+
+    atualizar();
+
+}
+
+
+/* =========================================================
+   INTENSIDADE DAS CORES
+   ========================================================= */
+
+function hexParaHsl(hex){
+    hex = hex.replace("#", "");
+    const r = parseInt(hex.substring(0,2),16) / 255;
+    const g = parseInt(hex.substring(2,4),16) / 255;
+    const b = parseInt(hex.substring(4,6),16) / 255;
+
+    const max = Math.max(r,g,b);
+    const min = Math.min(r,g,b);
+    let h = 0;
+    let s = 0;
+    const l = (max + min) / 2;
+
+    if(max !== min){
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch(max){
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+    }
+
+    return [h, s, l];
+}
+
+function hslParaHex(h,s,l){
+    let r,g,b;
+
+    if(s === 0){
+        r = g = b = l;
+    }else{
+        const hue2rgb = (p,q,t) => {
+            if(t < 0) t += 1;
+            if(t > 1) t -= 1;
+            if(t < 1/6) return p + (q-p) * 6 * t;
+            if(t < 1/2) return q;
+            if(t < 2/3) return p + (q-p) * (2/3-t) * 6;
+            return p;
+        };
+        const q = l < 0.5 ? l * (1+s) : l+s-l*s;
+        const p = 2*l-q;
+        r = hue2rgb(p,q,h+1/3);
+        g = hue2rgb(p,q,h);
+        b = hue2rgb(p,q,h-1/3);
+    }
+
+    return "#" + [r,g,b].map(v => Math.round(v*255).toString(16).padStart(2,"0")).join("");
+}
+
+function aplicarIntensidade(cor, intensidade){
+    const valor = Number(intensidade ?? 50);
+    if(valor === 50) return cor;
+
+    let [h,s,l] = hexParaHsl(cor);
+
+    if(valor < 50){
+        l = l * (valor / 50);
+    }else{
+        l = l + (1-l) * ((valor-50) / 50);
+    }
+
+    return hslParaHex(h,s,Math.max(0,Math.min(1,l)));
+}
+
+function atualizarTextoTom(tipo, valor){
+    const id = tipo === "cor" ? "valorTomCor" : tipo === "roupaCor" ? "valorTomRoupa" : "valorTomAcessorio";
+    const el = document.getElementById(id);
+    if(!el) return;
+
+    const n = Number(valor);
+    el.textContent = n === 50 ? "Original" : n < 50 ? `${Math.round(n)}% escura` : `${Math.round(n)}% clara`;
+}
+
+function atualizarControlesTom(){
+    const controles = [
+        ["tomCor", "valorTomCor", colorin.tomCor],
+        ["tomRoupa", "valorTomRoupa", colorin.tomRoupa],
+        ["tomAcessorio", "valorTomAcessorio", colorin.tomAcessorio]
+    ];
+
+    controles.forEach(([inputId, textId, valor]) => {
+        const valorFinal = Number.isFinite(Number(valor)) ? Number(valor) : 50;
+        const input = document.getElementById(inputId);
+        const texto = document.getElementById(textId);
+        if(input) input.value = valorFinal;
+        if(texto) atualizarTextoTom(inputId === "tomCor" ? "cor" : inputId === "tomRoupa" ? "roupaCor" : "acessorioCor", valorFinal);
+    });
+}
+
+function alterarTom(tipo, valor){
+    const valorFinal = Math.max(0, Math.min(100, Number(valor)));
+    colorin[tipo === "cor" ? "tomCor" : tipo === "roupaCor" ? "tomRoupa" : "tomAcessorio"] = valorFinal;
+    atualizarTextoTom(tipo, valorFinal);
+    desenharDocumento(document.getElementById("canvas"), colorin);
+}
+
+/* =========================================================
+   COLORIR IMAGEM
+   ========================================================= */
+
+function colorizarImagem(
+    imagem,
+    cor,
+    intensidade = 50
+){
+
+    if(!imagem)
+        return null;
+
+
+    const largura =
+        imagem.naturalWidth ||
+        imagem.width;
+
+    const altura =
+        imagem.naturalHeight ||
+        imagem.height;
+
+
+    const canvas =
+        document.createElement(
+            "canvas"
+        );
+
+
+    canvas.width =
+        largura;
+
+    canvas.height =
+        altura;
+
+
+    const ctx =
+        canvas.getContext(
+            "2d"
+        );
+
+
+    ctx.drawImage(
+        imagem,
+        0,
+        0
+    );
+
+
+    ctx.globalCompositeOperation =
+        "source-in";
+
+
+    ctx.fillStyle =
+        aplicarIntensidade(cor, intensidade);
+
+
+    ctx.fillRect(
+        0,
+        0,
+        largura,
+        altura
+    );
+
+
+    ctx.globalCompositeOperation =
+        "multiply";
+
+
+    ctx.drawImage(
+        imagem,
+        0,
+        0
+    );
+
+
+    ctx.globalCompositeOperation =
+        "source-over";
+
+
+    return canvas;
+
+}
+
+
+/* =========================================================
+   DESENHAR CAMADA
+   ========================================================= */
+
+function desenharCamada(
+    ctx,
+    imagem,
+    x,
+    y,
+    escala
+){
+
+    if(!imagem)
+        return;
+
+
+    const largura =
+        imagem.naturalWidth ||
+        imagem.width;
+
+    const altura =
+        imagem.naturalHeight ||
+        imagem.height;
+
+
+    ctx.drawImage(
+        imagem,
+        x,
+        y,
+        largura * escala,
+        altura * escala
+    );
+
+}
+
+
+/* =========================================================
+   FOLHA
+   ========================================================= */
+
+function prepararFolha(ctx){
+
+    ctx.fillStyle =
+        "#fffdf3";
+
+    ctx.fillRect(
+        0,
+        0,
+        LARGURA_CANVAS,
+        ALTURA_CANVAS
+    );
+
+
+    ctx.strokeStyle =
+        "#e3b51c";
+
+    ctx.lineWidth =
+        22;
+
+
+    ctx.strokeRect(
+        18,
+        18,
+        LARGURA_CANVAS - 36,
+        ALTURA_CANVAS - 36
+    );
+
+
+    ctx.strokeStyle =
+        "#f4d76d";
+
+    ctx.lineWidth =
+        5;
+
+
+    ctx.strokeRect(
+        45,
+        45,
+        LARGURA_CANVAS - 90,
+        ALTURA_CANVAS - 90
+    );
+
+
+    ctx.fillStyle =
+        "#f5ca2b";
+
+
+    ctx.fillRect(
+        47,
+        47,
+        LARGURA_CANVAS - 94,
+        135
+    );
+
+
+    ctx.fillStyle =
+        "#fffdf0";
+
+
+    ctx.font =
+        "bold 55px Georgia";
+
+
+    ctx.textAlign =
+        "center";
+
+
+    ctx.fillText(
+        "MEU COLORIN",
+        LARGURA_CANVAS / 2,
+        135
+    );
+
+}
+
+
+/* =========================================================
+   QUEBRA DE FRASE PARA A FOLHA
+   ========================================================= */
+
+function quebrarTextoCanvas(ctx, texto, larguraMaxima){{
+    const palavras = texto.split(" ");
+    const linhas = [];
+    let linha = "";
+
+    palavras.forEach(palavra => {{
+        const teste = linha
+            ? linha + " " + palavra
+            : palavra;
+
+        if(
+            ctx.measureText(teste).width <=
+            larguraMaxima
+        ){{
+            linha = teste;
+        }}else{{
+            if(linha){{
+                linhas.push(linha);
+            }}
+            linha = palavra;
+        }}
+    }});
+
+    if(linha){{
+        linhas.push(linha);
+    }}
+
+    return linhas.slice(0,3);
+}}
+
+
+/* =========================================================
+   QUEBRA DE FRASE PARA A FOLHA
+   ========================================================= */
+
+function quebrarTextoCanvas(ctx, texto, larguraMaxima){
+    const palavras = texto.split(" ");
+    const linhas = [];
+    let linha = "";
+
+    palavras.forEach(palavra => {
+        const teste = linha
+            ? linha + " " + palavra
+            : palavra;
+
+        if(
+            ctx.measureText(teste).width <=
+            larguraMaxima
+        ){
+            linha = teste;
+        }else{
+            if(linha){
+                linhas.push(linha);
+            }
+            linha = palavra;
+        }
+    });
+
+    if(linha){
+        linhas.push(linha);
+    }
+
+    return linhas.slice(0,3);
+}
+
+
+/* =========================================================
+   DESENHAR DOCUMENTO
+   ========================================================= */
+
+function desenharDocumento(
+    canvas,
+    item
+){
+
+    const ctx =
+        canvas.getContext(
+            "2d"
+        );
+
+
+    prepararFolha(ctx);
+
+
+    const corpo =
+        colorizarImagem(
+            imagens.corpo,
+            item.cor,
+            item.tomCor ?? 50
+        );
+
+
+    if(!corpo){
+
+        console.error(
+            "O arquivo corpo.png não foi carregado."
+        );
+
+        return;
+
+    }
+
+
+    let maiorLargura =
+        corpo.width;
+
+    let maiorAltura =
+        corpo.height;
+
+
+    const camadas =
+        [corpo];
+
+
+    if(
+        item.roupa !== "nenhuma" &&
+        imagens[item.roupa]
+    ){
+
+        camadas.push(
+            imagens[item.roupa]
+        );
+
+    }
+
+
+    if(
+        imagens[item.expressao]
+    ){
+
+        camadas.push(
+            imagens[item.expressao]
+        );
+
+    }
+
+
+    if(
+        item.acessorio !== "nenhum" &&
+        imagens[item.acessorio]
+    ){
+
+        camadas.push(
+            imagens[item.acessorio]
+        );
+
+    }
+
+
+    camadas.forEach(
+        imagem => {
+
+            const largura =
+                imagem.naturalWidth ||
+                imagem.width;
+
+            const altura =
+                imagem.naturalHeight ||
+                imagem.height;
+
+
+            maiorLargura =
+                Math.max(
+                    maiorLargura,
+                    largura
+                );
+
+
+            maiorAltura =
+                Math.max(
+                    maiorAltura,
+                    altura
+                );
+
+        }
+    );
+
+
+    const escala =
+        Math.min(
+            AREA_MAX_LARGURA /
+                maiorLargura,
+
+            AREA_MAX_ALTURA /
+                maiorAltura,
+
+            1
+        );
+
+
+    const larguraFinal =
+        maiorLargura *
+        escala;
+
+
+    const alturaFinal =
+        maiorAltura *
+        escala;
+
+
+    const x =
+        (
+            LARGURA_CANVAS -
+            larguraFinal
+        ) / 2;
+
+
+    const areaTopo =
+        220;
+
+
+    const areaAltura =
+        720;
+
+
+    const y =
+        areaTopo +
+        (
+            areaAltura -
+            alturaFinal
+        ) / 2;
+
+
+    /* CORPO */
+
+    desenharCamada(
+        ctx,
+        corpo,
+        x,
+        y,
+        escala
+    );
+
+
+    /* ACESSÓRIO */
+
+    if(
+        item.acessorio !== "nenhum" &&
+        imagens[item.acessorio]
+    ){
+
+        const acessorio =
+            colorizarImagem(
+                imagens[item.acessorio],
+                item.acessorioCor,
+                item.tomAcessorio ?? 50
+            );
+
+
+        desenharCamada(
+            ctx,
+            acessorio,
+            x,
+            y,
+            escala
+        );
+
+    }
+
+
+    /* EXPRESSÃO */
+
+    if(
+        imagens[item.expressao]
+    ){
+
+        desenharCamada(
+            ctx,
+            imagens[item.expressao],
+            x,
+            y,
+            escala
+        );
+
+    }
+
+
+    /* ROUPA */
+
+    if(
+        item.roupa !== "nenhuma" &&
+        imagens[item.roupa]
+    ){
+
+        const roupa =
+            colorizarImagem(
+                imagens[item.roupa],
+                item.roupaCor,
+                item.tomRoupa ?? 50
+            );
+
+
+        desenharCamada(
+            ctx,
+            roupa,
+            x,
+            y,
+            escala
+        );
+
+    }
+
+
+    /* TEXTO */
+
+    ctx.textAlign =
+        "center";
+
+
+    ctx.fillStyle =
+        "#704800";
+
+
+    ctx.font =
+        "bold 52px Georgia";
+
+
+    ctx.fillText(
+        item.nome.trim() ||
+        "Meu Colorin",
+
+        LARGURA_CANVAS / 2,
+
+        1040
+    );
+
+
+    ctx.font =
+        "italic 34px Georgia";
+
+
+    ctx.fillStyle =
+        "#85652a";
+
+
+    ctx.fillText(
+        item.caracteristica,
+
+        LARGURA_CANVAS / 2,
+
+        1100
+    );
+
+
+    ctx.font =
+        "42px serif";
+
+
+    ctx.fillStyle =
+        "#e4b51b";
+
+
+    ctx.fillText(
+        "✿",
+        150,
+        1200
+    );
+
+
+    ctx.fillText(
+        "✿",
+        900,
+        1200
+    );
+
+
+    const frase =
+        item.frase ||
+        obterFraseCaracteristica(item.caracteristica);
+
+
+    ctx.font =
+        "italic 25px Georgia";
+
+
+    ctx.fillStyle =
+        "#7a5b24";
+
+
+    const linhasFrase =
+        quebrarTextoCanvas(
+            ctx,
+            frase,
+            860
+        );
+
+
+    linhasFrase.forEach(
+        (linha, indice) => {
+
+            ctx.fillText(
+                linha,
+                LARGURA_CANVAS / 2,
+                1235 + (indice * 34)
+            );
+
+        }
+    );
+
+
+    ctx.font =
+        "bold 26px Georgia";
+
+
+    ctx.fillStyle =
+        "#98772d";
+
+
+    ctx.fillText(
+        "Ateliê dos Colorins",
+
+        LARGURA_CANVAS / 2,
+
+        1375
+    );
+
+}
+
+
+/* =========================================================
+   PALETA
+   ========================================================= */
+
+function criarPaleta(
+    elemento,
+    propriedade
+){
+
+    const container =
+        document.getElementById(
+            elemento
+        );
+
+
+    container.innerHTML =
+        "";
+
+
+    cores.forEach(
+        cor => {
+
+            const botao =
+                document.createElement(
+                    "button"
+                );
+
+
+            botao.className =
+                "color";
+
+
+            botao.style.background =
+                cor;
+
+
+            botao.title =
+                cor;
+
+
+            if(
+                colorin[propriedade] ===
+                cor
+            ){
+
+                botao.classList.add(
+                    "selected"
+                );
+
+            }
+
+
+            botao.onclick = () => {
+
+                colorin[propriedade] =
+                    cor;
+
+                if(propriedade === "cor") colorin.tomCor = 50;
+                if(propriedade === "roupaCor") colorin.tomRoupa = 50;
+                if(propriedade === "acessorioCor") colorin.tomAcessorio = 50;
+
+                atualizar();
+
+            };
+
+
+            container.appendChild(
+                botao
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   OPÇÕES
+   ========================================================= */
+
+function criarOpcoes(){
+
+    /* CARACTERÍSTICAS */
+
+    const caracteristicas =
+        document.getElementById(
+            "opcoesCaracteristica"
+        );
+
+    if(caracteristicas){
+        caracteristicas.innerHTML = "";
+
+        const listaCaracteristicas = [
+            ["Criativo","🎨"],
+            ["Aventureiro","🧭"],
+            ["Curioso","🔎"],
+            ["Corajoso","🦁"],
+            ["Amigável","😊"],
+            ["Inteligente","💡"],
+            ["Divertido","🎈"],
+            ["Gentil","🌷"],
+            ["Determinado","⭐"],
+            ["Imaginativo","🌙"],
+            ["Empático","💛"],
+            ["Solidário","🤝"],
+            ["Respeitoso","🌈"],
+            ["Cooperativo","🧩"],
+            ["Generoso","🎁"],
+            ["Paciente","🌱"],
+            ["Observador","👀"],
+            ["Persistente","🏃"],
+            ["Leal","💚"],
+            ["Inspirador","✨"]
+        ];
+
+        listaCaracteristicas.forEach(([nome,emoji]) => {
+            const botao = document.createElement("button");
+            botao.type = "button";
+            botao.className = "characteristic";
+            botao.textContent = `${emoji} ${nome}`;
+
+            if(colorin.caracteristica === nome){
+                botao.classList.add("selected");
+            }
+
+            botao.onclick = () => {
+                colorin.caracteristica = nome;
+                colorin.frase = obterFraseCaracteristica(nome);
+                atualizar();
+            };
+
+            caracteristicas.appendChild(botao);
+        });
+    }
+
+    /* ROUPAS */
+
+    const roupas =
+        document.getElementById(
+            "opcoesRoupa"
+        );
+
+
+    roupas.innerHTML =
+        "";
+
+
+    const listaRoupas = [
+
+        ["nenhuma","Sem roupa"],
+
+        ["camisa","Camisa"],
+
+        ["colete","Colete"],
+
+        ["macacao","Macacão"]
+
+    ];
+
+
+    listaRoupas.forEach(
+        ([id,nome]) => {
+
+            const botao =
+                document.createElement(
+                    "button"
+                );
+
+
+            botao.className =
+                "option";
+
+
+            if(
+                colorin.roupa ===
+                id
+            ){
+
+                botao.classList.add(
+                    "selected"
+                );
+
+            }
+
+
+            if(
+                id !== "nenhuma" &&
+                imagens[id]
+            ){
+
+                const img =
+                    document.createElement(
+                        "img"
+                    );
+
+
+                img.src =
+                    caminhos.roupas[id];
+
+
+                botao.appendChild(
+                    img
+                );
+
+            }
+
+
+            const texto =
+                document.createElement(
+                    "div"
+                );
+
+
+            texto.textContent =
+                nome;
+
+
+            botao.appendChild(
+                texto
+            );
+
+
+            botao.onclick = () => {
+
+                colorin.roupa =
+                    id;
+
+                atualizar();
+
+            };
+
+
+            roupas.appendChild(
+                botao
+            );
+
+        }
+    );
+
+
+    /* ACESSÓRIOS */
+
+    const acessorios =
+        document.getElementById(
+            "opcoesAcessorio"
+        );
+
+
+    acessorios.innerHTML =
+        "";
+
+
+    const listaAcessorios = [
+
+        ["nenhum","Nenhum"],
+
+        ["laco","Laço"],
+
+        ["oculos","Óculos"],
+
+        ["chapeu","Chapéu"]
+
+    ];
+
+
+    listaAcessorios.forEach(
+        ([id,nome]) => {
+
+            const botao =
+                document.createElement(
+                    "button"
+                );
+
+
+            botao.className =
+                "option";
+
+
+            if(
+                colorin.acessorio ===
+                id
+            ){
+
+                botao.classList.add(
+                    "selected"
+                );
+
+            }
+
+
+            if(
+                id !== "nenhum" &&
+                imagens[id]
+            ){
+
+                const img =
+                    document.createElement(
+                        "img"
+                    );
+
+
+                img.src =
+                    caminhos.acessorios[id];
+
+
+                botao.appendChild(
+                    img
+                );
+
+            }
+
+
+            const texto =
+                document.createElement(
+                    "div"
+                );
+
+
+            texto.textContent =
+                nome;
+
+
+            botao.appendChild(
+                texto
+            );
+
+
+            botao.onclick = () => {
+
+                colorin.acessorio =
+                    id;
+
+                atualizar();
+
+            };
+
+
+            acessorios.appendChild(
+                botao
+            );
+
+        }
+    );
+
+
+    /* EXPRESSÕES */
+
+    const expressoes =
+        document.getElementById(
+            "opcoesExpressao"
+        );
+
+
+    expressoes.innerHTML =
+        "";
+
+
+    const listaExpressoes = [
+
+        ["alegre","Alegre"],
+
+        ["triste","Triste"],
+
+        ["surpreso","Surpreso"],
+
+        ["bravo","Bravo"],
+
+        ["serio","Sério"]
+
+    ];
+
+
+    listaExpressoes.forEach(
+        ([id,nome]) => {
+
+            const botao =
+                document.createElement(
+                    "button"
+                );
+
+
+            botao.className =
+                "option";
+
+
+            if(
+                colorin.expressao ===
+                id
+            ){
+
+                botao.classList.add(
+                    "selected"
+                );
+
+            }
+
+
+            if(
+                imagens[id]
+            ){
+
+                const img =
+                    document.createElement(
+                        "img"
+                    );
+
+
+                img.src =
+                    caminhos.expressoes[id];
+
+
+                botao.appendChild(
+                    img
+                );
+
+            }
+
+
+            const texto =
+                document.createElement(
+                    "div"
+                );
+
+
+            texto.textContent =
+                nome;
+
+
+            botao.appendChild(
+                texto
+            );
+
+
+            botao.onclick = () => {
+
+                colorin.expressao =
+                    id;
+
+                atualizar();
+
+            };
+
+
+            expressoes.appendChild(
+                botao
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   INTERFACE
+   ========================================================= */
+
+function criarInterface(){
+
+    criarOpcoes();
+
+
+    criarPaleta(
+        "paletaCorpo",
+        "cor"
+    );
+
+
+    criarPaleta(
+        "paletaRoupa",
+        "roupaCor"
+    );
+
+
+    criarPaleta(
+        "paletaAcessorio",
+        "acessorioCor"
+    );
+
+    atualizarFraseCaracteristica();
+
+}
+
+
+/* =========================================================
+   NOME — CAPITALIZA A PRIMEIRA LETRA E A LETRA APÓS CADA ESPAÇO
+   ========================================================= */
+
+function normalizarNomeTexto(texto){
+    return texto.replace(/(^|\s)(\S)/gu,function(_,espaco,letra){
+        return espaco + letra.toLocaleUpperCase("pt-BR");
+    });
+}
+
+function normalizarNome(input){
+    if(!input) return;
+    const posicao=input.selectionStart;
+    const valor=normalizarNomeTexto(input.value);
+    if(input.value!==valor){
+        input.value=valor;
+        input.setSelectionRange(posicao,posicao);
+    }
+    atualizar();
+}
+
+
+/* =========================================================
+   ATUALIZAR
+   ========================================================= */
+
+function atualizar(){
+
+    const nome =
+        document.getElementById(
+            "nome"
+        );
+
+
+    if(nome){
+
+        colorin.nome =
+            normalizarNomeTexto(nome.value);
+
+        nome.value = colorin.nome;
+
+    }
+
+    colorin.frase = obterFraseCaracteristica(colorin.caracteristica);
+
+    criarInterface();
+    atualizarControlesTom();
+
+
+    const canvas =
+        document.getElementById(
+            "canvas"
+        );
+
+
+    desenharDocumento(
+        canvas,
+        colorin
+    );
+
+}
+
+
+/* =========================================================
+   NOVO
+   ========================================================= */
+
+function novoColorin(){
+
+    colorin = {
+
+        id:null,
+
+        nome:"",
+
+        cor:"#e53935",
+
+        tomCor:50,
+
+        roupa:"nenhuma",
+
+        roupaCor:"#1e88e5",
+
+        tomRoupa:50,
+
+        acessorio:"nenhum",
+
+        acessorioCor:"#ffc107",
+
+        tomAcessorio:50,
+
+        expressao:"alegre",
+
+        caracteristica:"Criativo",
+
+        frase:obterFraseCaracteristica("Criativo")
+
+    };
+
+
+    document.getElementById(
+        "nome"
+    ).value =
+        "";
+
+
+    atualizar();
+
+}
+
+
+/* =========================================================
+   ALEATÓRIO
+   ========================================================= */
+
+function aleatorio(lista){
+
+    return lista[
+        Math.floor(
+            Math.random() *
+            lista.length
+        )
+    ];
+
+}
+
+
+function surpreender(){
+
+    colorin.cor =
+        aleatorio(
+            cores
+        );
+
+
+    colorin.roupa =
+        aleatorio([
+
+            "nenhuma",
+            "camisa",
+            "colete",
+            "macacao"
+
+        ]);
+
+
+    colorin.roupaCor =
+        aleatorio(
+            cores
+        );
+
+    colorin.tomRoupa = 50;
+
+
+    colorin.acessorio =
+        aleatorio([
+
+            "nenhum",
+            "laco",
+            "oculos",
+            "chapeu"
+
+        ]);
+
+
+    colorin.acessorioCor =
+        aleatorio(
+            cores
+        );
+
+    colorin.tomCor = 50;
+    colorin.tomAcessorio = 50;
+
+
+    colorin.expressao =
+        aleatorio([
+
+            "alegre",
+            "triste",
+            "surpreso",
+            "bravo",
+            "serio"
+
+        ]);
+
+
+    colorin.caracteristica =
+        aleatorio([
+
+            "Criativo",
+            "Aventureiro",
+            "Curioso",
+            "Corajoso",
+            "Amigável",
+            "Inteligente",
+            "Divertido",
+            "Gentil",
+            "Determinado",
+            "Imaginativo",
+            "Empático",
+            "Solidário",
+            "Respeitoso",
+            "Cooperativo",
+            "Generoso",
+            "Paciente",
+            "Observador",
+            "Persistente",
+            "Leal",
+            "Inspirador"
+
+        ]);
+
+
+    colorin.frase =
+        obterFraseCaracteristica(colorin.caracteristica);
+
+
+    document.getElementById(
+        "nome"
+    ).value =
+        "";
+
+
+    atualizar();
+
+}
+
+
+/* =========================================================
+   GALERIA / LOCALSTORAGE
+   ========================================================= */
+
+function obterGaleria(){
+
+    try{
+
+        return JSON.parse(
+            localStorage.getItem(
+                "colorins"
+            )
+        ) || [];
+
+    }
+    catch{
+
+        return [];
+
+    }
+
+}
+
+
+function salvarGaleria(lista){
+
+    localStorage.setItem(
+        "colorins",
+        JSON.stringify(
+            lista
+        )
+    );
+
+}
+
+
+/* =========================================================
+   SALVAR
+   ========================================================= */
+
+function salvarColorin(){
+
+    const lista =
+        obterGaleria();
+
+
+    colorin.frase = obterFraseCaracteristica(colorin.caracteristica);
+
+    const copia = {
+
+        ...colorin,
+
+        id:
+            colorin.id ||
+            Date.now()
+
+    };
+
+
+    const indice =
+        lista.findIndex(
+            item =>
+                item.id ===
+                copia.id
+        );
+
+
+    if(indice >= 0){
+
+        lista[indice] =
+            copia;
+
+    }
+    else{
+
+        lista.push(
+            copia
+        );
+
+    }
+
+
+    colorin.id =
+        copia.id;
+
+
+    salvarGaleria(
+        lista
+    );
+
+
+    mostrarSalvamento();
+
+}
+
+
+/* =========================================================
+   ANIMAÇÃO DE SALVAMENTO
+   ========================================================= */
+
+function mostrarSalvamento(){
+
+    const botao =
+        document.getElementById(
+            "btnSalvar"
+        );
+
+    if(!botao)
+        return;
+
+    const textoOriginal =
+        botao.innerHTML;
+
+    botao.classList.remove("saving");
+
+    void botao.offsetWidth;
+
+    botao.classList.add("saving");
+
+    botao.innerHTML =
+        "✓ Colorin salvo!";
+
+    setTimeout(() => {
+
+        botao.classList.remove("saving");
+
+        botao.innerHTML =
+            textoOriginal;
+
+    }, 1300);
+
+}
+
+
+/* =========================================================
+   ABRIR GALERIA
+   ========================================================= */
+
+function abrirGaleria(){
+
+    document.getElementById(
+        "galeriaTela"
+    ).style.display =
+        "flex";
+
+
+    carregarGaleria();
+
+}
+
+
+/* =========================================================
+   FECHAR GALERIA
+   ========================================================= */
+
+function fecharGaleria(){
+
+    document.getElementById(
+        "galeriaTela"
+    ).style.display =
+        "none";
+
+}
+
+
+/* =========================================================
+   CARREGAR GALERIA
+   ========================================================= */
+
+function carregarGaleria(){
+
+    const container =
+        document.getElementById(
+            "galeriaConteudo"
+        );
+
+
+    const lista =
+        obterGaleria();
+
+
+    if(!lista.length){
+
+        container.innerHTML = `
+
+            <div class="galeria-vazia">
+
+                <h2>
+                    🌱 A galeria está vazia
+                </h2>
+
+                <p>
+                    Crie seu primeiro Colorin
+                    e salve-o para vê-lo aqui!
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    const grade =
+        document.createElement(
+            "div"
+        );
+
+
+    grade.className =
+        "galeria-grade";
+
+
+    lista.forEach(
+        item => {
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "galeria-card";
+
+
+            const canvas =
+                document.createElement(
+                    "canvas"
+                );
+
+
+            canvas.width =
+                LARGURA_CANVAS;
+
+
+            canvas.height =
+                ALTURA_CANVAS;
+
+
+            desenharDocumento(
+                canvas,
+                item
+            );
+
+
+            const titulo =
+                document.createElement(
+                    "h3"
+                );
+
+
+            titulo.textContent =
+                item.nome ||
+                "Meu Colorin";
+
+
+            const descricao =
+                document.createElement(
+                    "p"
+                );
+
+
+            descricao.textContent =
+                item.caracteristica;
+
+
+            const fraseGaleria =
+                document.createElement(
+                    "p"
+                );
+
+            fraseGaleria.className =
+                "galeria-frase";
+
+            fraseGaleria.textContent =
+                item.frase ||
+                obterFraseCaracteristica(item.caracteristica);
+
+
+            const acoes =
+                document.createElement(
+                    "div"
+                );
+
+
+            acoes.className =
+                "galeria-acoes";
+
+
+            /* AMPLIAR */
+
+            const ampliar =
+                document.createElement(
+                    "button"
+                );
+
+            ampliar.className =
+                "btn-primary";
+
+            ampliar.textContent =
+                "🔍 Ampliar";
+
+            ampliar.onclick = () => {
+
+                abrirZoom(
+                    item
+                );
+
+            };
+
+
+            /* EDITAR */
+
+            const editar =
+                document.createElement(
+                    "button"
+                );
+
+
+            editar.className =
+                "btn-primary";
+
+
+            editar.textContent =
+                "✏️ Editar";
+
+
+            editar.onclick = () => {
+
+                editarColorin(
+                    item.id
+                );
+
+            };
+
+
+            /* APAGAR */
+
+            const apagar =
+                document.createElement(
+                    "button"
+                );
+
+
+            apagar.className =
+                "btn-red";
+
+
+            apagar.textContent =
+                "🗑️ Apagar";
+
+
+            apagar.onclick = () => {
+
+                apagarColorin(
+                    item.id
+                );
+
+            };
+
+
+            acoes.appendChild(
+                ampliar
+            );
+
+
+            /* JPG */
+
+            const jpg =
+                document.createElement(
+                    "button"
+                );
+
+            jpg.className =
+                "btn-jpg";
+
+            jpg.textContent =
+                "🖼️ Salvar JPG";
+
+            jpg.onclick = () => {
+
+                salvarJPGColorin(
+                    item
+                );
+
+            };
+
+            acoes.appendChild(
+                jpg
+            );
+
+
+            acoes.appendChild(
+                editar
+            );
+
+
+            acoes.appendChild(
+                apagar
+            );
+
+
+            card.appendChild(
+                canvas
+            );
+
+
+            card.appendChild(
+                titulo
+            );
+
+
+            card.appendChild(
+                descricao
+            );
+
+
+            card.appendChild(
+                fraseGaleria
+            );
+
+
+            card.appendChild(
+                acoes
+            );
+
+
+            grade.appendChild(
+                card
+            );
+
+        }
+    );
+
+
+    container.innerHTML =
+        "";
+
+
+    container.appendChild(
+        grade
+    );
+
+}
+
+
+/* =========================================================
+   SALVAR COLORIN COMO JPG
+   ========================================================= */
+
+function salvarJPGColorin(item = null){
+
+    const dados = item || colorin;
+
+    if(!dados){
+        alert("Crie um Colorin antes de salvar como JPG.");
+        return;
+    }
+
+    const canvasJPG = document.createElement("canvas");
+    canvasJPG.width = LARGURA_CANVAS;
+    canvasJPG.height = ALTURA_CANVAS;
+
+    desenharDocumento(canvasJPG, dados);
+
+    const nome =
+        ((dados.nome || "Meu Colorin")
+        .replace(/[^a-zA-Z0-9À-ÿ _-]/g, "")
+        .trim() || "Meu Colorin") +
+        " - Atelie dos Colorins.jpg";
+
+    /*
+       Blob + URL temporária é mais apropriado para uma versão hospedada.
+       O arquivo é criado no navegador do visitante: não é enviado ao servidor.
+    */
+    canvasJPG.toBlob(function(blob){
+
+        if(!blob){
+            alert("Não foi possível criar o JPG deste Colorin.");
+            return;
+        }
+
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.download = nome;
+        link.style.display = "none";
+
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        /* Mantém a URL viva tempo suficiente para celulares iniciarem o download. */
+        setTimeout(function(){
+            URL.revokeObjectURL(url);
+        }, 5000);
+
+    }, "image/jpeg", 0.95);
+}
+
+
+
+/* =========================================================
+   ZOOM DO COLORIN
+   ========================================================= */
+
+function abrirZoom(item){
+
+    const tela =
+        document.getElementById(
+            "zoomTela"
+        );
+
+    const canvas =
+        document.getElementById(
+            "zoomCanvas"
+        );
+
+    const titulo =
+        document.getElementById(
+            "zoomTitulo"
+        );
+
+    if(!tela || !canvas)
+        return;
+
+    titulo.textContent =
+        item.nome ||
+        "Meu Colorin";
+
+    desenharDocumento(
+        canvas,
+        item
+    );
+
+    tela.style.display =
+        "flex";
+
+}
+
+
+function fecharZoom(event){
+
+    if(
+        event &&
+        event.target &&
+        event.target.id !==
+        "zoomTela"
+    ){
+        return;
+    }
+
+    const tela =
+        document.getElementById(
+            "zoomTela"
+        );
+
+    if(tela){
+        tela.style.display =
+            "none";
+    }
+
+}
+
+
+/* =========================================================
+   EDITAR COLORIN
+   ========================================================= */
+
+function editarColorin(id){
+
+    const lista =
+        obterGaleria();
+
+
+    const item =
+        lista.find(
+            x =>
+                x.id === id
+        );
+
+
+    if(!item)
+        return;
+
+
+    colorin =
+        {...item};
+
+    colorin.tomCor = Number.isFinite(Number(colorin.tomCor)) ? Number(colorin.tomCor) : 50;
+    colorin.tomRoupa = Number.isFinite(Number(colorin.tomRoupa)) ? Number(colorin.tomRoupa) : 50;
+    colorin.tomAcessorio = Number.isFinite(Number(colorin.tomAcessorio)) ? Number(colorin.tomAcessorio) : 50;
+    colorin.frase = obterFraseCaracteristica(colorin.caracteristica);
+
+
+    document.getElementById(
+        "nome"
+    ).value =
+        colorin.nome;
+
+
+    fecharGaleria();
+
+
+    atualizar();
+
+}
+
+
+/* =========================================================
+   APAGAR COLORIN
+   ========================================================= */
+
+function apagarColorin(id){
+
+    const confirmar =
+        confirm(
+            "Deseja realmente apagar este Colorin?"
+        );
+
+
+    if(!confirmar)
+        return;
+
+
+    let lista =
+        obterGaleria();
+
+
+    lista =
+        lista.filter(
+            item =>
+                item.id !== id
+        );
+
+
+    salvarGaleria(
+        lista
+    );
+
+
+    carregarGaleria();
+
+}
+
+
+/* =========================================================
+   INICIAR
+   ========================================================= */
+
+carregarTudo();
+
+</script>
+
+</body>
+</html>
